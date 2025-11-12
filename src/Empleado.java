@@ -1,38 +1,32 @@
-import java.io.Serializable;
+public abstract class Empleado {
+    protected String nombre;
+    protected String identificacion;
 
-public abstract class Empleado implements Serializable {
-    private String nombre;
-    private String apellido;
-    private String documento;
-    private double salarioBase;
-
-    public Empleado(String nombre, String apellido, String documento, double salarioBase) {
+    public Empleado(String nombre, String identificacion) {
         this.nombre = nombre;
-        this.apellido = apellido;
-        this.documento = documento;
-        this.salarioBase = salarioBase;
+        this.identificacion = identificacion;
     }
-
-    public abstract double calcularSalario();
 
     public String getNombre() {
         return nombre;
     }
 
-    public String getApellido() {
-        return apellido;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
-    public String getDocumento() {
-        return documento;
+    public String getIdentificacion() {
+        return identificacion;
     }
 
-    public double getSalarioBase() {
-        return salarioBase;
+    public void setIdentificacion(String identificacion) {
+        this.identificacion = identificacion;
     }
+
+    public abstract double calcularSalario();
 
     @Override
     public String toString() {
-        return nombre + " " + apellido + " - " + documento;
+        return "Nombre: " + nombre + ", Identificación: " + identificacion;
     }
 }
