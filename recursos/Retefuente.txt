@@ -1,0 +1,6 @@
+Nombre: Alejandro Sierra Tipo: Profesor Salario Base: 4725.0 Retefuente: 850.5
+Nombre: Andres Suarez Tipo: Profesor Salario Base: 3115.0 Retefuente: 560.6999999999999
+Nombre: Berenice Suarez Tipo: Empleado Salario Base: 1450.0 Retefuente: 261.0
+Nombre: Diana Bustamante Tipo: Empleado Salario Base: 580.0 Retefuente: 104.39999999999999
+Nombre: Estefania Bermudez Tipo: Monitor Salario Base: 1800.0 Retefuente: 324.0
+Nombre: Juan Garcés Tipo: Monitor Salario Base: 1140.0 Retefuente: 205.2

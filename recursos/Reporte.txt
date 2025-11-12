@@ -1,0 +1,6 @@
+Alejandro Sierra,222,$4.016,3
+Andres Suarez,123,$2.647,8
+Estefania Bermudez,567,$1.800,0
+Juan Garcés,444,$1.140,0
+Berenice Suarez,456,$942,5
+Diana Bustamante,333,$377,0
