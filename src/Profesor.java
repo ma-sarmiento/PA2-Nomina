@@ -22,8 +22,8 @@ public class Profesor extends Empleado implements Serializable {
         Instructor("Instructor", 2),
         Asistente("Asistente", 2.5),
         Asociado("Asociado", 3),
-        Titular("Titular", 3.5);
-
+        Titular("Titular", 3.5),
+        ;
         private final String escalafon;
         private final double salarioMin;
 
@@ -64,7 +64,6 @@ public class Profesor extends Empleado implements Serializable {
     public void setAsignaturas(List<Asignatura> asignaturas) {
         this.asignaturas = asignaturas;
     }
-
     private boolean escalafonInvalido(String escalafon) {
         for (Escalafon e : Escalafon.values()) {
             if (e.getEscalafon().equals(escalafon)) {
@@ -86,9 +85,9 @@ public class Profesor extends Empleado implements Serializable {
     public void calcularSalarioBase() {
         if (!escalafonInvalido(escalafon)) {
             throw new IllegalStateException("Escalafon inválido: " + escalafon);
-        } else {
+        }else{
             if (escalafon.equals(Escalafon.Catedra.getEscalafon())) {
-                salarioBase = (Escalafon.Catedra.getSalarioMin() * Empleado.SMVL) + (valorHora * totalHorasTrabajadas(asignaturas));
+                salarioBase = (Escalafon.Catedra.getSalarioMin()* Empleado.SMVL) + (valorHora * totalHorasTrabajadas(asignaturas));
             } else if (escalafon.equals(Escalafon.Instructor.getEscalafon())) {
                 salarioBase = (Escalafon.Instructor.getSalarioMin() * Empleado.SMVL) + (valorHora * totalHorasTrabajadas(asignaturas));
             } else if (escalafon.equals(Escalafon.Asistente.getEscalafon())) {
@@ -105,17 +104,17 @@ public class Profesor extends Empleado implements Serializable {
     public void calcularSalarioEmpleado() {
         if (!escalafonInvalido(escalafon)) {
             throw new IllegalStateException("Escalafon inválido: " + escalafon);
-        } else {
-            if (escalafon.equals(Escalafon.Catedra.getEscalafon())) {
-                salarioTot = ((Escalafon.Catedra.getSalarioMin() * Empleado.SMVL) + (valorHora * totalHorasTrabajadas(asignaturas))) * 0.85;
-            } else if (escalafon.equals(Escalafon.Instructor.getEscalafon())) {
-                salarioTot = ((Escalafon.Instructor.getSalarioMin() * Empleado.SMVL) + (valorHora * totalHorasTrabajadas(asignaturas))) * 0.85;
-            } else if (escalafon.equals(Escalafon.Asistente.getEscalafon())) {
-                salarioTot = ((Escalafon.Asistente.getSalarioMin() * Empleado.SMVL) + (valorHora * totalHorasTrabajadas(asignaturas))) * 0.85;
-            } else if (escalafon.equals(Escalafon.Asociado.getEscalafon())) {
-                salarioTot = ((Escalafon.Asociado.getSalarioMin() * Empleado.SMVL) + (valorHora * totalHorasTrabajadas(asignaturas))) * 0.85;
-            } else if (escalafon.equals(Escalafon.Titular.getEscalafon())) {
-                salarioTot = ((Escalafon.Titular.getSalarioMin() * Empleado.SMVL) + (valorHora * totalHorasTrabajadas(asignaturas))) * 0.85;
+        }else {
+            if(escalafon.equals(Escalafon.Catedra.getEscalafon())){
+                salarioTot = ((Escalafon.Catedra.getSalarioMin()*Empleado.SMVL)+(valorHora*totalHorasTrabajadas(asignaturas)))*0.85;
+            }else if(escalafon.equals(Escalafon.Instructor.getEscalafon())){
+                salarioTot=((Escalafon.Instructor.getSalarioMin()*Empleado.SMVL)+(valorHora*totalHorasTrabajadas(asignaturas)))*0.85;
+            }else if(escalafon.equals(Escalafon.Asistente.getEscalafon())){
+                salarioTot=((Escalafon.Asistente.getSalarioMin()*Empleado.SMVL)+(valorHora*totalHorasTrabajadas(asignaturas)))*0.85;
+            }else if(escalafon.equals(Escalafon.Asociado.getEscalafon())){
+                salarioTot=((Escalafon.Asociado.getSalarioMin()*Empleado.SMVL)+(valorHora*totalHorasTrabajadas(asignaturas)))*0.85;
+            }else if(escalafon.equals(Escalafon.Titular.getEscalafon())){
+                salarioTot=((Escalafon.Titular.getSalarioMin()*Empleado.SMVL)+(valorHora*totalHorasTrabajadas(asignaturas)))*0.85;
             }
         }
     }

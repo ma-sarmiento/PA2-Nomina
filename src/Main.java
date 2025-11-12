@@ -4,124 +4,115 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException{
         Scanner scan = new Scanner(System.in);
-        int opcion;
+        int opcion=0;
         boolean repetir = true;
-
         List<Empleado> empleados = new ArrayList<>();
         Nomina nomina = new Nomina(empleados);
-
-        do {
-            System.out.println("\n--- Menú de Opciones ---");
-            System.out.println("1. Cargar empleados desde archivo");
-            System.out.println("2. Agregar empleado");
-            System.out.println("3. Eliminar empleado");
-            System.out.println("4. Agregar asignatura a profesor");
-            System.out.println("5. Agregar asignatura a monitor");
-            System.out.println("6. Calcular salario de empleado");
-            System.out.println("7. Calcular salario de profesor");
-            System.out.println("8. Calcular salario de monitor");
-            System.out.println("9. Listar empleados por Retefuente");
-            System.out.println("10. Generar reporte de nómina");
-            System.out.println("11. Guardar nómina en binario");
-            System.out.println("12. Listar empleados por tipo y salario base");
-            System.out.println("0. Salir");
-            System.out.print("Seleccione una opción: ");
+        do{
+            System.out.println("Ingrese alguna de las opciones: ");
+            System.out.println("\n1.Cargar empleados");
+            System.out.println("\n2.Agregar empleado");
+            System.out.println("\n3.Eliminar empleado");
+            System.out.println("\n4.Adicionar una asignatura a un profesor");
+            System.out.println("\n5.Adicionar una asignatura a un monitor");
+            System.out.println("\n6.Calcular el salario de un empleado");
+            System.out.println("\n7.Calcular el salario de un profesor");
+            System.out.println("\n8.Calcular el salario de un monitor");
+            System.out.println("\n9.Listar empleados por Retefuente");
+            System.out.println("\n10.Generar nomina");
+            System.out.println("\n11.Persistir nomina");
+            System.out.println("\n12.Listar por tipo y salario");
+            System.out.println("\n0. Salir");
             opcion = scan.nextInt();
-            scan.nextLine(); // limpiar buffer
-
-            switch (opcion) {
+            scan.nextLine();
+            switch (opcion){
                 case 1:
                     empleados = nomina.obtenerEmpleados();
                     break;
-
                 case 2:
-                    System.out.print("Nombre: ");
-                    String nombre = scan.nextLine();
-                    System.out.print("Documento: ");
-                    String documento = scan.nextLine();
-                    nomina.agregarEmpleado(nombre, documento);
+                    String nombreE="";
+                    String documentoE = "";
+                    System.out.println("Ingrese el nombre del empleado: ");
+                    nombreE = scan.nextLine();
+                    System.out.println("Ingrese el documento del empleado: ");
+                    documentoE = scan.nextLine();
+                    nomina.agregarEmpleado(nombreE, documentoE);
                     break;
-
                 case 3:
-                    System.out.print("Nombre o documento del empleado a eliminar: ");
-                    String criterio = scan.nextLine();
-                    nomina.eliminarEmpleado(criterio);
+                    String opcionEl="";
+                    System.out.println("Ingrese el nombre o el documento del empleado a eliminar");
+                    opcionEl= scan.nextLine();
+                    nomina.eliminarEmpleado(opcionEl);
                     break;
-
                 case 4:
-                    System.out.print("Documento del profesor: ");
-                    String docProf = scan.nextLine();
-                    System.out.print("Nombre de la asignatura: ");
-                    String asigProf = scan.nextLine();
-                    System.out.print("Horas: ");
-                    int horasProf = scan.nextInt();
-                    nomina.agregarAsignaturaProf(docProf, asigProf, horasProf);
+                    String documentoP ="";
+                    String nombreAP="";
+                    int numHorasP=0;
+                    System.out.println("Ingrese el documento del profesor: ");
+                    documentoP= scan.nextLine();
+                    System.out.println("Ingrese el nombre de la asignatura: ");
+                    nombreAP= scan.nextLine();
+                    System.out.println("Ingrese el numero de horas trabajadas: ");
+                    numHorasP=scan.nextInt();
+                    nomina.agregarAsignaturaProf(documentoP, nombreAP, numHorasP);
                     break;
-
                 case 5:
-                    System.out.print("Documento del monitor: ");
-                    String docMon = scan.nextLine();
-                    System.out.print("Nombre de la asignatura: ");
-                    String asigMon = scan.nextLine();
-                    System.out.print("Horas: ");
-                    int horasMon = scan.nextInt();
-                    nomina.agregarAsignaturaMonitor(docMon, asigMon, horasMon);
+                    String documentoM ="";
+                    String nombreAM="";
+                    int numHorasM=0;
+                    System.out.println("Ingrese el documento del monitor: ");
+                    documentoM= scan.nextLine();
+                    System.out.println("Ingrese el nombre de la asignatura: ");
+                    nombreAM= scan.nextLine();
+                    System.out.println("Ingrese el numero de horas trabajadas: ");
+                    numHorasM=scan.nextInt();
+                    nomina.agregarAsignaturaMonitor(documentoM, nombreAM, numHorasM);
                     break;
-
                 case 6:
-                    System.out.print("Documento del empleado: ");
-                    String docEmp = scan.nextLine();
-                    nomina.calcularSalarioEmpleado(docEmp);
+                    String documentoEE="";
+                    System.out.println("Ingrese el documento del empleado: ");
+                    documentoEE=scan.nextLine();
+                    nomina.calcularSalarioEmpleado(documentoEE);
                     break;
-
                 case 7:
-                    System.out.print("Documento del profesor: ");
-                    String docP = scan.nextLine();
-                    nomina.calcularSalarioProfesor(docP);
+                    String documentoEP="";
+                    System.out.println("Ingrese el documento del profesor: ");
+                    documentoEP=scan.nextLine();
+                    nomina.calcularSalarioProfesor(documentoEP);
                     break;
-
                 case 8:
-                    System.out.print("Documento del monitor: ");
-                    String docM = scan.nextLine();
-                    nomina.calcularSalarioMonitor(docM);
+                    String documentoEM="";
+                    System.out.println("Ingrese el documento del monitor: ");
+                    documentoEM=scan.nextLine();
+                    nomina.calcularSalarioEmpleado(documentoEM);
                     break;
-
                 case 9:
-                    System.out.print("Valor base para retefuente: ");
-                    double base = scan.nextDouble();
-                    nomina.listarRetefuente(base);
+                    double valorBase=0.0;
+                    System.out.println("Ingrese el valor base por parametro: ");
+                    valorBase=scan.nextDouble();
+                    nomina.listarRetefuente(valorBase);
                     break;
-
                 case 10:
                     nomina.generarReporteNomina();
                     break;
-
                 case 11:
                     nomina.guardarNomina(empleados);
                     break;
-
                 case 12:
-                    System.out.print("Dependencia (Empleado / Profesor / Monitor): ");
-                    String dep = scan.nextLine();
-                    System.out.print("Valor mínimo salario base: ");
-                    double val = scan.nextDouble();
-                    nomina.listarEmpleadosPorTipoYSalario(dep, val);
+                    String dependencia="";
+                    double valorParametro=0.0;
+                    System.out.println("Ingrese la dependencia del empleado: ");
+                    dependencia=scan.nextLine();
+                    System.out.println("Ingrese el valor por parametro: ");
+                    valorParametro=scan.nextDouble();
+                    nomina.listarEmpleadosPorTipoYSalario(dependencia, valorParametro);
                     break;
-
                 case 0:
-                    repetir = false;
-                    System.out.println("Saliendo del sistema...");
-                    break;
-
-                default:
-                    System.out.println("Opción no válida.");
+                    repetir =  false;
                     break;
             }
-
-        } while (repetir);
-
-        scan.close();
+        }while(repetir);
     }
 }

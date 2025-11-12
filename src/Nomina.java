@@ -1,244 +1,286 @@
 import java.io.*;
 import java.util.*;
 
-public class Nomina {
+public class Nomina{
     private List<Empleado> empleados;
     Scanner scan = new Scanner(System.in);
-
-    public Nomina(List<Empleado> empleados) {
-        this.empleados = empleados;
+    public Nomina(List<Empleado> empleados){
+        this.empleados=empleados;
     }
-
     public List<Empleado> getEmpleados() {
         return empleados;
     }
-
     public void setEmpleados(List<Empleado> empleados) {
         this.empleados = empleados;
     }
-
-    // Cargar empleados desde archivo de texto
     public List<Empleado> obtenerEmpleados() throws IOException {
         BufferedReader leer = null;
         try {
             leer = new BufferedReader(new FileReader("nomina.txt"));
-            String linea, lineaAsignatura;
+            String linea;
+            String lineaAsignatura;
+            String nombre;
+            String documento;
+            String dependencia;
+            String escalafon;
+            String nombreAsignatura;
+            List<Asignatura> asignaturas;
+            Asignatura nuevaAsignatura;
+            int horasAsignatura;
+            int horasTotales;
+            int salariosMinimos;
+
             while (!(linea = leer.readLine()).equals("FIN") && linea != null) {
                 StringTokenizer token = new StringTokenizer(linea, "%");
-                String nombre = token.nextToken().trim();
-                String documento = token.nextToken().trim();
-                String dependencia = token.nextToken().trim();
+                nombre = token.nextToken().trim();
+                documento = token.nextToken().trim();
+                dependencia = token.nextToken().trim();
 
                 if (dependencia.equals("Profesor")) {
-                    String escalafon = leer.readLine();
-                    List<Asignatura> asignaturas = new ArrayList<>();
+                    horasTotales = 0;
+                    escalafon = leer.readLine();
+                    asignaturas = new ArrayList<>();
                     while (!(lineaAsignatura = leer.readLine()).equals("#")) {
-                        String[] infoAsignatura = lineaAsignatura.split(",");
-                        asignaturas.add(new Asignatura(infoAsignatura[0].trim(), Integer.parseInt(infoAsignatura[1].trim())));
+                        String infoAsignatura[] = lineaAsignatura.split(",");
+                        nombreAsignatura = infoAsignatura[0].trim();
+                        horasAsignatura = Integer.parseInt(infoAsignatura[1].trim());
+                        horasTotales += horasAsignatura;
+                        nuevaAsignatura = new Asignatura(nombreAsignatura, horasAsignatura);
+                        asignaturas.add(nuevaAsignatura);
                     }
                     Profesor p = new Profesor(nombre, documento, dependencia, escalafon, asignaturas);
+                    p.setAsignaturas(asignaturas);
                     empleados.add(p);
                 } else if (dependencia.equals("Monitor")) {
-                    List<Asignatura> asignaturas = new ArrayList<>();
+                    horasTotales = 0;
+                    asignaturas = new ArrayList<>();
                     while (!(lineaAsignatura = leer.readLine()).equals("#")) {
-                        String[] infoAsignatura = lineaAsignatura.split(",");
-                        asignaturas.add(new Asignatura(infoAsignatura[0].trim(), Integer.parseInt(infoAsignatura[1].trim())));
+                        String infoAsignatura[] = lineaAsignatura.split(",");
+                        nombreAsignatura = infoAsignatura[0].trim();
+                        horasAsignatura = Integer.parseInt(infoAsignatura[1].trim());
+                        nuevaAsignatura = new Asignatura(nombreAsignatura, horasAsignatura);
+                        asignaturas.add(nuevaAsignatura);
                     }
                     Monitor m = new Monitor(nombre, documento, dependencia, asignaturas);
+                    m.setAsignaturas(asignaturas);
                     empleados.add(m);
                 } else if (dependencia.equals("Empleado")) {
-                    int salariosMinimos = Integer.parseInt(leer.readLine().trim());
+                    salariosMinimos = Integer.parseInt(leer.readLine().trim());
                     Empleado e = new Empleado(nombre, documento, dependencia, salariosMinimos);
+                    e.setSalariosMinimos(salariosMinimos);
                     empleados.add(e);
-                    leer.readLine(); // Salta posible línea vacía
+                    linea = leer.readLine();
                 }
             }
-            System.out.println("Se han cargado los empleados.");
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         } finally {
-            if (leer != null) leer.close();
+            leer.close();
+            System.out.println("Se han cargado los empleados");
         }
         return empleados;
     }
-
-    // Agregar empleado por tipo
     public void agregarEmpleado(String nombre, String documento) {
-        for (Empleado e : empleados) {
+        boolean empleadoExists = false;
+        Empleado nuevoEmpleado = null;
+
+        for (Empleado e : this.empleados) {
             if (e.getDocumento().equals(documento)) {
                 System.out.println("Este empleado ya existe");
-                return;
-            }
-        }
-
-        System.out.println("Ingrese el tipo de dependencia (Empleado / Profesor / Monitor): ");
-        String dependencia = scan.nextLine();
-
-        if (dependencia.equalsIgnoreCase("Empleado")) {
-            System.out.println("Ingrese los salarios mínimos que gana: ");
-            int salarioMin = scan.nextInt();
-            empleados.add(new Empleado(nombre, documento, dependencia, salarioMin));
-            scan.nextLine(); // Limpia el buffer
-        } else if (dependencia.equalsIgnoreCase("Profesor")) {
-            System.out.println("Ingrese el escalafón: ");
-            String escalafon = scan.nextLine();
-            empleados.add(new Profesor(nombre, documento, dependencia, escalafon, null));
-        } else if (dependencia.equalsIgnoreCase("Monitor")) {
-            empleados.add(new Monitor(nombre, documento, dependencia, null));
-        }
-
-        System.out.println("Empleado agregado correctamente.");
-    }
-
-    // Eliminar empleado por nombre o documento
-    public void eliminarEmpleado(String criterio) {
-        Empleado encontrado = null;
-        for (Empleado e : empleados) {
-            if (e.getDocumento().equals(criterio) || e.getNombre().equals(criterio)) {
-                encontrado = e;
+                empleadoExists = true;
                 break;
             }
         }
-        if (encontrado != null) {
-            empleados.remove(encontrado);
-            System.out.println("Empleado eliminado.");
+        if (!empleadoExists) {
+            System.out.println("Ingrese el tipo de dependencia del empleado: ");
+            String dependencia = scan.nextLine();
+            if (dependencia.equalsIgnoreCase("Empleado")) {
+                System.out.println("Ingrese los salarios minimos que gana: ");
+                int salarioMin = scan.nextInt();
+                nuevoEmpleado = new Empleado(nombre, documento, dependencia, salarioMin);
+                System.out.println("Se ha agregado el empleado");
+                scan.nextLine();
+            } else if (dependencia.equalsIgnoreCase("Profesor")) {
+                System.out.println("Ingrese el escalafon: ");
+                String escalafon = scan.nextLine();
+                nuevoEmpleado = new Profesor(nombre, documento, dependencia, escalafon, null);
+                System.out.println("Se ha agregado el profesor");
+            } else if (dependencia.equalsIgnoreCase("Monitor")) {
+                nuevoEmpleado = new Monitor(nombre, documento, dependencia, null);
+                System.out.println("Se ha agregado el monitor");
+            }
+        }
+
+        if (nuevoEmpleado != null) {
+            empleados.add(nuevoEmpleado);
+        }
+    }
+    public void eliminarEmpleado(String opcion){
+        Empleado empleadoE=null;
+        for(Empleado e : this.empleados){
+            if(e.getDocumento().equals(opcion)||e.getNombre().equals(opcion)){
+                empleadoE=e;
+                break;
+            }
+        }
+        if(empleadoE!=null){
+            this.empleados.remove(empleadoE);
+            System.out.println("Se ha eliminado el empleado");
+        }else{
+            System.out.println("No se encontro el empleado");
+        }
+    }
+    public void agregarAsignaturaProf(String documento, String nombreA, int numHora){
+        Profesor profEncontrado = null;
+        for (Empleado e : this.empleados) {
+            if (e instanceof Profesor && e.getDocumento().equals(documento)) {
+                profEncontrado = (Profesor) e;
+                break;
+            }
+        }
+        if (profEncontrado != null) {
+            Asignatura nuevaAsignatura = new Asignatura(nombreA, numHora);
+            profEncontrado.getAsignaturas().add(nuevaAsignatura);
+            System.out.println("Se agregó la asignatura");
         } else {
-            System.out.println("Empleado no encontrado.");
+            System.out.println("No se encontró al profesor");
         }
     }
-
-    // Agregar asignatura a profesor
-    public void agregarAsignaturaProf(String documento, String nombreA, int numHoras) {
-        for (Empleado e : empleados) {
-            if (e instanceof Profesor && e.getDocumento().equals(documento)) {
-                ((Profesor) e).getAsignaturas().add(new Asignatura(nombreA, numHoras));
-                System.out.println("Asignatura agregada al profesor.");
-                return;
-            }
-        }
-        System.out.println("Profesor no encontrado.");
-    }
-
-    // Agregar asignatura a monitor
-    public void agregarAsignaturaMonitor(String documento, String nombreA, int numHoras) {
-        for (Empleado e : empleados) {
+    public void agregarAsignaturaMonitor(String documento, String nombreA, int numHora){
+        Monitor mEncontrado = null;
+        for (Empleado e : this.empleados) {
             if (e instanceof Monitor && e.getDocumento().equals(documento)) {
-                ((Monitor) e).getAsignaturas().add(new Asignatura(nombreA, numHoras));
-                System.out.println("Asignatura agregada al monitor.");
-                return;
+                mEncontrado = (Monitor) e;
+                break;
             }
         }
-        System.out.println("Monitor no encontrado.");
+        if (mEncontrado != null) {
+            Asignatura nuevaAsignatura = new Asignatura(nombreA, numHora);
+            mEncontrado.getAsignaturas().add(nuevaAsignatura);
+            System.out.println("Se agregó la asignatura");
+        } else {
+            System.out.println("No se encontró al monitor");
+        }
     }
 
-    // Calcular salario según tipo
-    public void calcularSalarioEmpleado(String documento) {
-        for (Empleado e : empleados) {
-            if (e.getDocumento().equals(documento)) {
+    public void  calcularSalarioEmpleado(String documento){
+        for(Empleado e : this.empleados){
+            if(e.getDocumento().equals(documento)){
                 e.calcularSalarioEmpleado();
-                System.out.println("Salario total: $" + e.getSalarioTot());
+                System.out.println("El salario del empleado es de: "+e.getSalarioTot());
             }
         }
     }
-
-    public void calcularSalarioProfesor(String documento) {
-        for (Empleado e : empleados) {
-            if (e instanceof Profesor && e.getDocumento().equals(documento)) {
-                ((Profesor) e).calcularSalarioEmpleado();
-                System.out.println("Salario profesor: $" + e.getSalarioTot());
+    public void calcularSalarioProfesor(String documento){
+        for(Empleado e: this.empleados){
+            if(e.getDocumento().equals(documento) && e instanceof Profesor){
+                Profesor p = (Profesor) e;
+                p.calcularSalarioEmpleado();
+                System.out.println("El salario total del profesor es de: "+p.getSalarioTot());
             }
         }
     }
-
-    public void calcularSalarioMonitor(String documento) {
-        for (Empleado e : empleados) {
-            if (e instanceof Monitor && e.getDocumento().equals(documento)) {
-                ((Monitor) e).calcularSalarioEmpleado();
-                System.out.println("Salario monitor: $" + e.getSalarioTot());
+    public void calcularSalarioMonitor(String documento){
+        for(Empleado e: this.empleados){
+            if(e.getDocumento().equals(documento) && e instanceof Monitor){
+                Monitor m=(Monitor)e;
+                m.calcularSalarioEmpleado();
+                System.out.println("El salario total del monitor es: "+m.getSalarioTot());
             }
         }
     }
-
-    // Reporte de retefuente
-    public void listarRetefuente(double valorBase) {
-        List<Empleado> filtrados = new ArrayList<>();
-        for (Empleado e : empleados) {
+    public void listarRetefuente(double valorBase){
+        List<Empleado> retefuente = new ArrayList<>();
+        for(Empleado e: this.empleados){
             e.calcularSalarioBase();
-            if (e.getSalarioBase() > valorBase) {
-                filtrados.add(e);
+            if(e.getSalarioBase()>valorBase){
+                retefuente.add(e);
             }
         }
-        filtrados.sort(Comparator.comparing(Empleado::getNombre, String.CASE_INSENSITIVE_ORDER));
-
-        try (FileWriter fw = new FileWriter("Retefuente.txt")) {
-            for (Empleado e : filtrados) {
-                double rete = e.getSalarioBase() * 0.18;
-                String linea = String.format("Nombre: %s | Tipo: %s | Salario Base: %.2f | Retefuente: %.2f%n",
-                        e.getNombre(), e.getDependencia(), e.getSalarioBase(), rete);
-                fw.write(linea);
-                System.out.print(linea);
+        Collections.sort(retefuente, new Comparator<Empleado>() {
+            @Override
+            public int compare(Empleado e1, Empleado e2) {
+                return e1.getNombre().compareToIgnoreCase(e2.getNombre());
             }
-            System.out.println("Archivo Retefuente.txt generado.");
-        } catch (IOException e) {
+        });
+        try(FileWriter out = new FileWriter("Retefuente.txt")){
+            for(Empleado e: retefuente){
+                double valorRete=0.0;
+                valorRete=e.getSalarioBase()*0.18;
+                System.out.println("Nombre: "+e.getNombre()+" "+"Tipo: "+e.getDependencia()+" "+ "Salario Base: "+e.getSalarioBase()+" "+"Retefuente: "+valorRete);
+                out.write("Nombre: "+e.getNombre()+" "+"Tipo: "+e.getDependencia()+" "+ "Salario Base: "+e.getSalarioBase()+" "+"Retefuente: "+valorRete+System.lineSeparator());
+            }
+            System.out.println("Se ha generado la retefuente correctamente");
+        }catch (IOException e){
             e.printStackTrace();
         }
     }
-
-    // Generar nómina general
     public void generarReporteNomina() {
-        for (Empleado e : empleados) {
+        for (Empleado e : this.empleados) {
             e.calcularSalarioEmpleado();
         }
-        empleados.sort(Comparator.comparingDouble(Empleado::getSalarioTot).reversed());
-
-        try (FileWriter fw = new FileWriter("Reporte.txt")) {
-            for (Empleado e : empleados) {
-                fw.write(String.format("%s,%s,$%.2f%n", e.getNombre(), e.getDocumento(), e.getSalarioTot()));
+        Collections.sort(this.empleados, new Comparator<Empleado>() {
+            @Override
+            public int compare(Empleado e1, Empleado e2) {
+                return Double.compare(e2.getSalarioTot(), e1.getSalarioTot());
             }
-            System.out.println("Archivo Reporte.txt generado.");
+        });
+        try (FileWriter out = new FileWriter("Reporte.txt")) {
+            for (Empleado e : this.empleados) {
+                String linea = String.format("%s,%s,$%,.1f%n", e.getNombre(), e.getDocumento(), e.getSalarioTot());
+                out.write(linea);
+            }
+            System.out.println("Se ha generado la nómina correctamente");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+    public void guardarNomina(List<Empleado> empleados){
+        try (FileOutputStream fileOut = new FileOutputStream("Nomina.bin");
+             ObjectOutputStream objectOut = new ObjectOutputStream(fileOut)) {
 
-    // Guardar en archivo binario
-    public void guardarNomina(List<Empleado> empleados) {
-        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("Nomina.bin"))) {
-            out.writeObject(empleados);
-            System.out.println("Nómina guardada en Nomina.bin");
+            objectOut.writeObject(empleados);
+
+            System.out.println("La nómina ha sido guardada en un archivo binario.");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
-    // Listar empleados por tipo y salario con orden burbuja
     public void listarEmpleadosPorTipoYSalario(String dependencia, double valorParametro) {
+        List<Empleado> empleadosFiltrados = filtrarEmpleadosPorTipoYSalario(dependencia, valorParametro);
+        ordenarEmpleadosPorNombreConBurbuja(empleadosFiltrados);
+        escribirEmpleadosEnArchivo(empleadosFiltrados, "Sobresueldo.txt", valorParametro);
+    }
+
+    private List<Empleado> filtrarEmpleadosPorTipoYSalario(String dependencia, double valorParametro) {
         List<Empleado> filtrados = new ArrayList<>();
-        for (Empleado e : empleados) {
-            if (e.getDependencia().equalsIgnoreCase(dependencia) && e.getSalarioBase() > valorParametro) {
-                filtrados.add(e);
+        for (Empleado empleado : this.empleados) {
+            if (empleado != null && empleado.getDependencia().equalsIgnoreCase(dependencia) && empleado.getSalarioBase() > valorParametro) {
+                filtrados.add(empleado);
             }
         }
+        return filtrados;
+    }
 
-        // Orden burbuja
-        boolean ordenado;
+    private void ordenarEmpleadosPorNombreConBurbuja(List<Empleado> empleados) {
+        boolean intercambiado;
         do {
-            ordenado = true;
-            for (int i = 0; i < filtrados.size() - 1; i++) {
-                if (filtrados.get(i).getNombre().compareToIgnoreCase(filtrados.get(i + 1).getNombre()) > 0) {
-                    Empleado temp = filtrados.get(i);
-                    filtrados.set(i, filtrados.get(i + 1));
-                    filtrados.set(i + 1, temp);
-                    ordenado = false;
+            intercambiado = false;
+            for (int i = 0; i < empleados.size() - 1; i++) {
+                if (empleados.get(i).getNombre().compareToIgnoreCase(empleados.get(i + 1).getNombre()) > 0) {
+
+                    Empleado temp = empleados.get(i);
+                    empleados.set(i, empleados.get(i + 1));
+                    empleados.set(i + 1, temp);
+                    intercambiado = true;
                 }
             }
-        } while (!ordenado);
-
-        try (FileWriter fw = new FileWriter("Sobresueldo.txt")) {
-            for (Empleado e : filtrados) {
-                fw.write(String.format("Nombre: %s | Salario Base: %.2f%n", e.getNombre(), e.getSalarioBase()));
-            }
-            System.out.println("Archivo Sobresueldo.txt generado.");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } while (intercambiado);
     }
+    private void escribirEmpleadosEnArchivo(List<Empleado> empleados, String nombreArchivo, double valorParametro) {
+
+    }
+
 }

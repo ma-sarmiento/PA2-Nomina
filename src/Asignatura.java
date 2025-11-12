@@ -1,4 +1,6 @@
-public class Asignatura {
+import java.io.Serializable;
+
+public class Asignatura implements Serializable {
     private String nombre;
     private int numHoras;
 
@@ -7,9 +9,19 @@ public class Asignatura {
         this.numHoras = numHoras;
     }
 
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
+    public String getNombre() {
+        return nombre;
+    }
 
-    public int getNumHoras() { return numHoras; }
-    public void setNumHoras(int numHoras) { this.numHoras = numHoras; }
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public int getNumHoras() {
+        return numHoras;
+    }
+
+    public void setNumHoras(int numHoras) {
+        this.numHoras = numHoras;
+    }
 }
